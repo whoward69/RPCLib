@@ -14,7 +14,7 @@
 
 char version_code[] = { 0xE9, 0x25, 0x01, 0x00, 0x00, 0x90 };
 
-char unusedGlobalReturn[] = { 0x01 };
+char unusedGlobalReturn[] = { 0xAC };
  
 //This is just ret in assembly.
 char ret_code[] = { 0xC3 };
@@ -52,10 +52,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         WriteToMemory((DWORD)modBase + GAME_VERSION_JMP, version_code, sizeof(version_code) / sizeof(*version_code));
 
         //Hook SimAntics Iterations.
-        WriteToMemory((DWORD)modBase + SIMANTICS_ITERATIONS_RETURN + 1, &newIterations, 4);
-        WriteToMemory(SIMANTICS_ITERATIONS_GLOBAL, &newIterations, 4);
+        // Players won't care about this, but developers should as it means the code is NOT playing nicely for co-operative multitasking
+//        WriteToMemory((DWORD)modBase + SIMANTICS_ITERATIONS_RETURN + 1, &newIterations, 4);
+//        WriteToMemory(SIMANTICS_ITERATIONS_GLOBAL, &newIterations, 4);
 
-        //Make first Unused Global return 1, so modders can detect increased SimAntics primitives and perhaps other things.
+        //Make first Unused Global (Global 0x0B) return 0xAC, so modders can detect increased SimAntics primitives and perhaps other things.
         WriteToMemory((DWORD)modBase + UNUSED_GLOBAL_ADDR_CMP, unusedGlobalReturn, sizeof(unusedGlobalReturn) / sizeof(unusedGlobalReturn));
         WriteToMemory((DWORD)modBase + UNUSED_GLOBAL_ADDR_MOV, unusedGlobalReturn, sizeof(unusedGlobalReturn) / sizeof(unusedGlobalReturn));
 
